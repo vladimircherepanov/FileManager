@@ -11,6 +11,7 @@ import { moveFile } from "./moveFile.js";
 import { calculateHash } from "./calculateHash.js";
 import { compressFile } from "./compressFile.js";
 import { decompressFile } from "./decompressFile.js";
+import { osFunctions } from "./osFunctions.js"
 
 export {
     listContain,
@@ -25,5 +26,6 @@ export {
     moveFile,
     calculateHash,
     compressFile,
-    decompressFile
+    decompressFile,
+    osFunctions
 }

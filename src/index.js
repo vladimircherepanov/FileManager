@@ -2,20 +2,19 @@ import { homedir } from 'os';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { chdir } from 'node:process';
-import { listContain, exitProgram, changeDirectoryUp, changeDirectory, readFile, createFile, removeFile, renameFile, copyFile, moveFile, calculateHash, compressFile, decompressFile } from "./modules/index.js";
+import { listContain, exitProgram, changeDirectoryUp, changeDirectory, readFile, createFile, removeFile, renameFile, copyFile, moveFile, calculateHash, compressFile, decompressFile, osFunctions } from "./modules/index.js";
 
 const args = process.argv.slice(2);
 const username = args.find(arg => arg.startsWith('--username=')).split('=')[1];
 console.log(`Welcome to the File Manager, ${username}`);
-const userHomeDir = homedir();
-chdir(userHomeDir);
-console.log(`You are currently in ${userHomeDir}`);
+chdir(homedir());
+console.log(`You are currently in ${homedir()}`);
 
 const rl = readline.createInterface({ input, output });
 
 // Handle user input
 const handleUserInput = async (input) => {
-    const [command, argument1, argument2] = input.split(' ');
+    const [command, ...args] = input.split(' ');
 
     try {
         switch (command) {
@@ -29,80 +28,88 @@ const handleUserInput = async (input) => {
                 await changeDirectoryUp();
                 break;
             case 'cd':
-                if (argument1) {
-                    await changeDirectory(argument1);
+                if (args.length  > 0) {
+                    await changeDirectory();
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'cat':
-                if (argument1) {
-                    await readFile(argument1);
+                if (args.length  > 0) {
+                    await readFile(args[0]);
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'add':
-                if (argument1) {
-                    await createFile(argument1);
+                if (args.length  > 0) {
+                    await createFile(args[0]);
                     console.log('File created.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'rm':
-                if (argument1) {
-                    await removeFile(argument1);
+                if (args.length  > 0) {
+                    await removeFile(args[0]);
                     console.log('File removed.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'cp':
-                if (argument1 && argument2) {
-                    await copyFile(argument1, argument2);
+                if (args.length  > 1) {
+                    await copyFile(args[0], args[1]);
                     console.log('File copied.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'rn':
-                if (argument1 && argument2) {
-                    await renameFile(argument1, argument2);
+                if (args.length  > 1) {
+                    await renameFile(args[0], args[1]);
                     console.log('File renamed.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'mv':
-                if (argument1 && argument2) {
-                    await moveFile(argument1, argument2);
+                if (args.length  > 1) {
+                    await moveFile(args[0], args[1]);
                     console.log('File moved.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'compress':
-                if (argument1 && argument2) {
-                    await compressFile(argument1, argument2);
+                if (args.length  > 1) {
+                    await compressFile(args[0], args[1]);
                     console.log('File compressed.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'decompress':
-                if (argument1 && argument2) {
-                    await decompressFile(argument1, argument2);
+                if (args.length  > 1) {
+                    await decompressFile(args[0], args[1]);
                     console.log('File decompressed.');
                 } else {
                     console.log(`Invalid input`);
                 }
                 break;
             case 'hash':
-                if (argument1) {
-                    await calculateHash(argument1);
+                if (args.length  > 0) {
+                    await calculateHash(args[0]);
                 } else {
                     console.log(`Invalid input`);
+                }
+                break;
+            case 'os':
+                if (args.length > 0) {
+                    const parameter = args[0].startsWith('--') ? args[0].slice(2) : '';
+                    await osFunctions(parameter);
+                } else {
+                    console.log('Invalid input');
                 }
                 break;
             default:
