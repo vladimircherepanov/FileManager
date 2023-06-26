@@ -1,13 +1,13 @@
-import fs from "fs";
+import fs from 'fs';
+import { promisify } from 'util';
 
-export const copyFile = async (fileName, folderPath) => {
-    return new Promise((resolve, reject) => {
-        fs.copyFile(fileName, folderPath, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
+const copyFile = promisify(fs.copyFile);
+
+export const copyFileAsync = async (fileName, folderPath) => {
+    try {
+        await copyFile(fileName, folderPath);
+        console.log('File copied.');
+    } catch (error) {
+        console.error('An error occurred while copying the file:', error);
+    }
 };
